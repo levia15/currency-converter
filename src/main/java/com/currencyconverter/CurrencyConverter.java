@@ -9,9 +9,12 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.apache.http.client.utils.URIBuilder;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public final class CurrencyConverter {
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    public static void main(String[] args) throws URISyntaxException, IOException, ParseException {
         Properties prop=new Properties();
         FileInputStream file= new FileInputStream("config.properties");
         prop.load(file);
@@ -23,17 +26,23 @@ public final class CurrencyConverter {
         connection.setRequestMethod("GET"); //Get request
         int responseCode = connection.getResponseCode();
         
-        //print out get call response (to be used, just printing for testing now)
+        //get call response 
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(connection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuffer response = new StringBuffer();
             while ((readLine = in .readLine()) != null) {
                 response.append(readLine);
-            } in .close();
-            System.out.println("JSON String Result " + response.toString());
+            } 
+            in.close();
+            //Using the JSON simple library parse the string into a json object
+            JSONParser parser = new JSONParser();
+            JSONObject responseBody = (JSONObject) parser.parse(response.toString());
+
+            //Get the rate object from the above created JSONObject
+            JSONObject rates = (JSONObject) responseBody.get("rates");
+        
         } else {
-            System.out.println("GET NOT WORKED");
+            throw new RuntimeException("HttpResponseCode: " + responseCode);
         }
     
     }

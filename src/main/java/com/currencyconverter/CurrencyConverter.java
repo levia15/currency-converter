@@ -19,14 +19,14 @@ public final class CurrencyConverter {
         exchangeRatesURI.setParameter("app_id",prop.getProperty("API_KEY")); //get API_Key and set as query parameter
         String readLine = null;
         URL get = new URL(exchangeRatesURI.build().toString()); //URL for request
-        HttpURLConnection conection = (HttpURLConnection) get.openConnection();
-        conection.setRequestMethod("GET"); //Get request
-        int responseCode = conection.getResponseCode();
-       
+        HttpURLConnection connection = (HttpURLConnection) get.openConnection();
+        connection.setRequestMethod("GET"); //Get request
+        int responseCode = connection.getResponseCode();
+        
         //print out get call response (to be used, just printing for testing now)
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in = new BufferedReader(
-                new InputStreamReader(conection.getInputStream()));
+                new InputStreamReader(connection.getInputStream()));
             StringBuffer response = new StringBuffer();
             while ((readLine = in .readLine()) != null) {
                 response.append(readLine);

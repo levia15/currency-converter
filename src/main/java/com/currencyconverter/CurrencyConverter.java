@@ -1,23 +1,29 @@
 package com.currencyconverter;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Properties;
 
 import org.apache.http.client.utils.URIBuilder;
 
 public final class CurrencyConverter {
     public static void main(String[] args) throws URISyntaxException, IOException {
+        Properties prop=new Properties();
+        FileInputStream file= new FileInputStream("config.properties");
+        prop.load(file);
         URIBuilder exchangeRatesURI = new URIBuilder("https://openexchangerates.org/api/latest.json");
-        exchangeRatesURI.setParameter("app_id",""); //need to find way to hide API key
+        exchangeRatesURI.setParameter("app_id",prop.getProperty("API_KEY")); //get API_Key and set as query parameter
         String readLine = null;
-        URL get = new URL(exchangeRatesURI.build().toString());
+        URL get = new URL(exchangeRatesURI.build().toString()); //URL for request
         HttpURLConnection conection = (HttpURLConnection) get.openConnection();
-        conection.setRequestMethod("GET");
+        conection.setRequestMethod("GET"); //Get request
         int responseCode = conection.getResponseCode();
        
+        //print out get call response (to be used, just printing for testing now)
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(conection.getInputStream()));

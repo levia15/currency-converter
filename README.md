@@ -1,0 +1,1 @@
+Run main method in CurrencyConveter.java to launch a currency converter application
